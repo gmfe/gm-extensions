@@ -1,0 +1,81 @@
+
+.__gm-extensions_gitlabpure {
+  .header-content {
+    .logo-text {
+      display: none;
+    }
+
+    .navbar-sub-nav {
+      display: none;
+    }
+
+    .navbar-collapse {
+      li:not(.hidden-sm) {
+        display: none;
+      }
+    }
+  }
+
+  div.nav-sidebar {
+    z-index: 1000;
+    width: 0;
+    min-width: 0;
+
+    .context-header {
+      display: none;
+    }
+
+    & > div > ul > li {
+      width: 0;
+
+      .nav-item-name {
+        display: none;
+      }
+
+      .shortcuts-issues {
+        position: fixed;
+        top: -40px;
+        left: 50px;
+        & + ul {
+          display: none !important;
+        }
+      }
+
+      .shortcuts-merge_requests {
+        position: fixed;
+        top: -40px;
+        left: 130px;
+        & + ul {
+          display: none !important;
+        }
+      }
+      .shortcuts-wiki {
+        position: fixed;
+        top: -40px;
+        left: 210px;
+        & + ul {
+          display: none !important;
+        }
+      }
+    }
+
+    .toggle-sidebar-button {
+      display: none;
+    }
+  }
+
+  .right-sidebar {
+    .block {
+      display: none;
+    }
+    .assignee {
+      display: block;
+    }
+    .labels {
+      display: block;
+    }
+    .participants {
+      display: block;
+    }
+  }
+}

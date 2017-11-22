@@ -1,0 +1,79 @@
+.__gm-extensions_gitlabpure .header-content .logo-text {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure .header-content .navbar-sub-nav {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure .header-content .navbar-collapse li:not(.hidden-sm) {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar {
+    z-index: 1000;
+    width: 0;
+    min-width: 0;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar .context-header {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li {
+    width: 0;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .nav-item-name {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-issues {
+    position: fixed;
+    top: -40px;
+    left: 50px;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-issues + ul {
+    display: none !important;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-merge_requests {
+    position: fixed;
+    top: -40px;
+    left: 130px;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-merge_requests + ul {
+    display: none !important;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-wiki {
+    position: fixed;
+    top: -40px;
+    left: 210px;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar > div > ul > li .shortcuts-wiki + ul {
+    display: none !important;
+}
+
+.__gm-extensions_gitlabpure div.nav-sidebar .toggle-sidebar-button {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure .right-sidebar .block {
+    display: none;
+}
+
+.__gm-extensions_gitlabpure .right-sidebar .assignee {
+    display: block;
+}
+
+.__gm-extensions_gitlabpure .right-sidebar .labels {
+    display: block;
+}
+
+.__gm-extensions_gitlabpure .right-sidebar .participants {
+    display: block;
+}

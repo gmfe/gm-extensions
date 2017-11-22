@@ -1,0 +1,35 @@
+{
+  "name": "gm-extensions",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "gm-extensions",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://code.guanmai.cn/*"
+      ],
+      "css": [
+        "gitlab-pure/index.css"
+      ],
+      "js": [
+        "gitlab-pure/index.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://station.guanmai.cn/*",
+        "*://station.dev.guanmai.cn/*",
+        "*://manage.guanmai.cn/*",
+        "*://manage.dev.guanmai.cn/*",
+        "*://bshop.guanmai.cn/*",
+        "*://bshop.dev.guanmai.cn/*"
+      ],
+      "js": [
+        "guanmai/index.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "guanmai/inject.js"
+  ]
+}
