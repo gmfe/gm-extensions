@@ -9,7 +9,7 @@
 
 
             div.innerHTML = [
-                `<div>GroupID ${window.g_partner_id}</div>`,
+                `<div>GroupID ${window.g_group_id === undefined ? window.g_partner_id : window.g_group_id}</div>`,
                 `<div>分支 ${window.____fe_branch}</div>`,
                 `<div style="text-align: right;border-top: 1px solid black;">assistant</div>`
             ].join('');
