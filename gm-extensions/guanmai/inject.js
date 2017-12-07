@@ -94,7 +94,7 @@
 
     // 更新逻辑
     function getNextVersion() {
-        return fetch('https://raw.githubusercontent.com/gmfe/gm-extensions/master/gm-extensions/manifest.json').then(res => {
+        return fetch('https://raw.githubusercontent.com/gmfe/gm-extensions/master/gm-extensions/manifest.json?' + Math.random()).then(res => {
             if (res.ok) {
                 return res.json();
             }
