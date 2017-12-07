@@ -2,11 +2,11 @@
 
 
     function doCallback() {
-        console.log('lala')
     }
 
     function loadScript(url) {
         var elem = document.createElement('script');
+        elem.id = '__gm-extensions_script';
         elem.type = 'text/javascript';
         elem.charset = 'utf-8';
         elem.addEventListener('load', doCallback, false);
@@ -18,5 +18,7 @@
         return chrome.extension.getURL(file);
     }
 
-    loadScript(url('guanmai/inject.js'));
+    const version = chrome.runtime.getManifest().version;
+
+    loadScript(url('guanmai/inject.js?' + version));
 })();
