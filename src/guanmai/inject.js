@@ -26,11 +26,12 @@ class QuickLogin extends React.Component {
         return JSON.parse(localStorage.getItem(KEYQUICKLOGIN)) || [];
     }
 
-    addAccounts(username, password) {
+    addAccounts(username, password, remark) {
         const accounts = this.getAccounts();
         accounts.push({
             username,
-            password
+            password,
+            remark
         });
         this.setState({
             accounts
@@ -38,9 +39,9 @@ class QuickLogin extends React.Component {
         localStorage.setItem(KEYQUICKLOGIN, JSON.stringify(accounts));
     }
 
-    removeAccounts(username) {
+    removeAccounts(username, password) {
         const accounts = this.getAccounts();
-        const index = accounts.findIndex(v => v.username === username);
+        const index = accounts.findIndex(v => v.username === username && v.password === password);
         if (index > -1) {
             accounts.splice(index, 1);
         }
@@ -64,17 +65,19 @@ class QuickLogin extends React.Component {
     };
 
     handleAdd = () => {
-        const text = window.prompt('请输入 用户名 + 密码，中间空格隔开');
+        const text = window.prompt('请输入 用户名 + 密码 + 备注(可选)，中间空格隔开');
         if (text) {
             const username = text.split(' ')[0];
             const password = text.split(' ')[1];
-            this.addAccounts(username, password);
+            const remark = text.split(' ')[2];
+
+            this.addAccounts(username, password, remark);
         }
     };
 
-    handleRemove = ({username}) => {
+    handleRemove = ({username, password}) => {
         if (window.confirm('确定移除？')) {
-            this.removeAccounts(username);
+            this.removeAccounts(username, password);
         }
     };
 
@@ -93,16 +96,16 @@ class QuickLogin extends React.Component {
                             <span
                                 style={{cursor: 'pointer', position: 'relative'}}
                                 onClick={this.handleLogin.bind(this, account)}
-                            >{account.username}</span>
+                            >{account.username}{account.remark ? `(${account.remark})` : ''}</span>
                                 <span style={{cursor: 'pointer', position: 'absolute', right: 0}}
-                                      onClick={this.handleRemove.bind(this, account)}>-</span>
+                                      onClick={this.handleRemove.bind(this, account)}>&nbsp;-&nbsp;</span>
                             </div>
                         ))}
                     </div>
                 )}
                 <div style={{textAlign: 'right'}}>
-                    {show && <span style={{cursor: 'pointer'}} onClick={this.handleAdd}> + </span>}
-                    <span style={{cursor: 'pointer', marginLeft: '10px'}} onClick={this.handleShow}>
+                    {show && <span style={{cursor: 'pointer'}} onClick={this.handleAdd}>&nbsp;+&nbsp;</span>}
+                    <span style={{cursor: 'pointer'}} onClick={this.handleShow}>
                         quick login
                     </span>
                 </div>

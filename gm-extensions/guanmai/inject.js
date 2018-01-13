@@ -85,19 +85,22 @@ var QuickLogin = function (_React$Component) {
         };
 
         _this.handleAdd = function () {
-            var text = window.prompt('请输入 用户名 + 密码，中间空格隔开');
+            var text = window.prompt('请输入 用户名 + 密码 + 备注(可选)，中间空格隔开');
             if (text) {
                 var username = text.split(' ')[0];
                 var password = text.split(' ')[1];
-                _this.addAccounts(username, password);
+                var remark = text.split(' ')[2];
+
+                _this.addAccounts(username, password, remark);
             }
         };
 
         _this.handleRemove = function (_ref2) {
-            var username = _ref2.username;
+            var username = _ref2.username,
+                password = _ref2.password;
 
             if (window.confirm('确定移除？')) {
-                _this.removeAccounts(username);
+                _this.removeAccounts(username, password);
             }
         };
 
@@ -115,11 +118,12 @@ var QuickLogin = function (_React$Component) {
         }
     }, {
         key: 'addAccounts',
-        value: function addAccounts(username, password) {
+        value: function addAccounts(username, password, remark) {
             var accounts = this.getAccounts();
             accounts.push({
                 username: username,
-                password: password
+                password: password,
+                remark: remark
             });
             this.setState({
                 accounts: accounts
@@ -128,10 +132,10 @@ var QuickLogin = function (_React$Component) {
         }
     }, {
         key: 'removeAccounts',
-        value: function removeAccounts(username) {
+        value: function removeAccounts(username, password) {
             var accounts = this.getAccounts();
             var index = accounts.findIndex(function (v) {
-                return v.username === username;
+                return v.username === username && v.password === password;
             });
             if (index > -1) {
                 accounts.splice(index, 1);
@@ -170,7 +174,8 @@ var QuickLogin = function (_React$Component) {
                                 style: {cursor: 'pointer', position: 'relative'},
                                 onClick: _this2.handleLogin.bind(_this2, account)
                             },
-                            account.username
+                            account.username,
+                            account.remark ? '(' + account.remark + ')' : ''
                         ),
                         React.createElement(
                             'span',
@@ -178,7 +183,7 @@ var QuickLogin = function (_React$Component) {
                                 style: {cursor: 'pointer', position: 'absolute', right: 0},
                                 onClick: _this2.handleRemove.bind(_this2, account)
                             },
-                            '-'
+                            '\xA0-\xA0'
                         )
                     );
                 })
@@ -189,11 +194,11 @@ var QuickLogin = function (_React$Component) {
                     show && React.createElement(
                     'span',
                     {style: {cursor: 'pointer'}, onClick: this.handleAdd},
-                    ' + '
+                    '\xA0+\xA0'
                     ),
                     React.createElement(
                         'span',
-                        {style: {cursor: 'pointer', marginLeft: '10px'}, onClick: this.handleShow},
+                        {style: {cursor: 'pointer'}, onClick: this.handleShow},
                         'quick login'
                     )
                 )
