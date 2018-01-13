@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel -w gm-extensions/guanmai_src -d gm-extensions/guanmai"
+    "build": "babel -w src/guanmai -d gm-extensions/guanmai"
   },
   "repository": {
     "type": "git",

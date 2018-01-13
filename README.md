@@ -1,9 +1,13 @@
+> 如果遇到问题请看最后
+
 # gm-extensions
 
 安装
-- 下载 `gm-extensions.crx` 文件到电脑
-- chrome 地址栏输入 chrome://extensions/
-- 把 crx 文件拖进来即可
+- 下载 [gm-extensions](https://codeload.github.com/gmfe/gm-extensions/zip/master)
+- 解压
+- chrome 地址栏输入 [chrome://extensions/](chrome://extensions/)
+- 勾选 位于顶部的 开发者模式
+- 进入解压文件，找到文件夹 `gm-extensions` ，把此文件夹拖进 chrome 即可。
 
 有以下功能模块。定位助手，未来会扩展更多能力...
 
