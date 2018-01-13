@@ -4,7 +4,8 @@
   "description": "gm extensions",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel -w gm-extensions/guanmai_src -d gm-extensions/guanmai"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/gmfe/gm-extensions/issues"
   },
-  "homepage": "https://github.com/gmfe/gm-extensions#readme"
+  "homepage": "https://github.com/gmfe/gm-extensions#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
 }

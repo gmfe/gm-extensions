@@ -1,13 +1,10 @@
-'use strict';
-
 (function () {
+
 
     function doCallback() {
     }
 
-    function loadScript(url) {
-        var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : doCallback;
-
+    function loadScript(url, callback = doCallback) {
         var elem = document.createElement('script');
         elem.id = '__gm-extensions_script';
         elem.type = 'text/javascript';
@@ -21,18 +18,20 @@
         return chrome.extension.getURL(file);
     }
 
-    var version = chrome.runtime.getManifest().version;
+    const version = chrome.runtime.getManifest().version;
 
-    var reactUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.development.js';
-    var reactDomUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.development.js';
+
+    const reactUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.development.js';
+    const reactDomUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.development.js';
     // loadScript(url('guanmai/inject.js?' + version));
-    loadScript(reactUrl, function () {
+    loadScript(reactUrl, () => {
         console.log('load react');
-        loadScript(reactDomUrl, function () {
+        loadScript(reactDomUrl, () => {
             console.log('load react-dom');
-            loadScript(url('guanmai/react.js?' + version), function () {
+            loadScript(url('guanmai/react.js?' + version), () => {
                 console.log('load react.js');
             });
-        });
+        })
     });
+
 })();

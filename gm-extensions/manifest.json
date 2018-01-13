@@ -30,6 +30,7 @@
     }
   ],
   "web_accessible_resources": [
-    "guanmai/inject.js"
+    "guanmai/inject.js",
+    "guanmai/react.js"
   ]
 }
