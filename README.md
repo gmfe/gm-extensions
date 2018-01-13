@@ -13,11 +13,15 @@
 
 ## guanmai
 
-显示 guanmai 网站的基本信息，比如 GroupID、当前分支名
+显示 guanmai 网站的基本信息，比如 group、cms_key、当前分支名。 
 
-![](http://7xlnio.com1.z0.glb.clouddn.com/17-11-22/39765805.jpg)
+提供快速登录方式(目前仅station)。
 
-and 右下角有个 `assistant` 文案，点击可切换是否开启 assistant
+![](http://7xlnio.com1.z0.glb.clouddn.com/18-1-13/39610524.jpg)
+
+点击 `assistant` 可切换是否开启 assistant。
+
+点击 `quick login` 可切换是否显示 快速登录功能。
 
 ## gitlab-pure
 
@@ -25,6 +29,6 @@ and 右下角有个 `assistant` 文案，点击可切换是否开启 assistant
 
 ![](http://7xlnio.com1.z0.glb.clouddn.com/17-11-6/13530519.jpg)
 
-and 右下角有个 `pure` 文案，点击可切换是否开启 pure
+点击 `pure` 可切换是否开启 pure。
 
 ![](http://7xlnio.com1.z0.glb.clouddn.com/17-11-6/58104184.jpg)
