@@ -1,6 +1,6 @@
 {
   "name": "gm-extensions",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "manifest_version": 2,
   "description": "gm-extensions",
   "content_scripts": [
@@ -19,10 +19,13 @@
       "matches": [
         "*://station.guanmai.cn/*",
         "*://station.dev.guanmai.cn/*",
+        "*://station.devhost.guanmai.cn/*",
         "*://manage.guanmai.cn/*",
         "*://manage.dev.guanmai.cn/*",
+        "*://manage.devhost.guanmai.cn/*",
         "*://bshop.guanmai.cn/*",
-        "*://bshop.dev.guanmai.cn/*"
+        "*://bshop.dev.guanmai.cn/*",
+        "*://bshop.devhost.guanmai.cn/*"
       ],
       "js": [
         "guanmai/index.js"
