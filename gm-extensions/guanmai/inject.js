@@ -141,19 +141,20 @@ var QuickLogin = (_temp = _class = function (_React$Component) {
 
   this.handleLogin = function (_ref) {
     var username = _ref.username,
-      password = _ref.password
+      password = _ref.password;
     var platform = _this4.state.platform
+
 
     if (platform === 'station') {
       doStationLogin(username, password).then(function () {
         window.location.href = '/'
-      })
+      });
     } else if (platform === 'bshop') {
       doBShopLogin(username, password).then(function () {
         window.location.href = '/v587/'
-      })
+      });
     }
-  }
+  };
 }, _temp);
 
 var Info = function (_React$Component2) {
@@ -237,8 +238,8 @@ var App = function (_React$Component3) {
       localStorage.setItem(KEY, !_this6.state.show ? '1' : '0')
       _this6.setState({
         show: !_this6.state.show
-      })
-    }
+      });
+    };
 
     _this6.state = {
       show: localStorage.getItem(KEY) === '1' || false,
