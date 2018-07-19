@@ -3,7 +3,7 @@
     }
 
     function loadScript(url, name, callback = doCallback) {
-        var elem = document.createElement('script');
+      const elem = document.createElement('script')
         elem.id = '__gm-extensions_script_' + name;
         elem.type = 'text/javascript';
         elem.charset = 'utf-8';

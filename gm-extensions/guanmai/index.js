@@ -1,8 +1,7 @@
 'use strict';
 
 (function () {
-    function doCallback() {
-    }
+    function doCallback() {}
 
     function loadScript(url, name) {
         var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : doCallback;
