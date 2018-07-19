@@ -9,43 +9,34 @@ const KEY = '__gm-extensions_guanmai_show'
 const KEYQUICKLOGIN = '__gm-extensions_quick_login'
 
 // 简单判断是否station
-const isStation = window.g_user && window.g_user.station_id
+const isStation = window.g_user && window.g_user.station_id || window.location.host.includes('station')
+const isBShop = window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')
 
 class QuickLogin extends React.Component {
   constructor (props) {
     super(props)
+
+    let platform
+    if (isStation) {
+      platform = 'station'
+    } else if (isBShop) {
+      platform = 'bshop'
+    }
+
     this.state = {
-      accounts: this.getAccounts()
+      platform,
+      accounts: []
     }
   }
 
-  getAccounts () {
-    return JSON.parse(localStorage.getItem(KEYQUICKLOGIN)) || []
-  }
-
-  addAccounts (username, password, remark) {
-    const accounts = this.getAccounts()
-    accounts.push({
-      username,
-      password,
-      remark
+  componentDidMount () {
+    getLoginData().then(res => {
+      if (this.state.platform) {
+        this.setState({
+          accounts: res[this.state.platform]
+        })
+      }
     })
-    this.setState({
-      accounts
-    })
-    localStorage.setItem(KEYQUICKLOGIN, JSON.stringify(accounts))
-  }
-
-  removeAccounts (username, password) {
-    const accounts = this.getAccounts()
-    const index = accounts.findIndex(v => v.username === username && v.password === password)
-    if (index > -1) {
-      accounts.splice(index, 1)
-    }
-    this.setState({
-      accounts
-    })
-    localStorage.setItem(KEYQUICKLOGIN, JSON.stringify(accounts))
   }
 
   handleLogin = ({username, password}) => {
@@ -54,26 +45,10 @@ class QuickLogin extends React.Component {
     })
   }
 
-  handleAdd = () => {
-    const text = window.prompt('请输入 用户名 + 密码 + 备注(可选)，中间空格隔开')
-    if (text) {
-      const username = text.split(' ')[0]
-      const password = text.split(' ')[1]
-      const remark = text.split(' ')[2]
-
-      this.addAccounts(username, password, remark)
-    }
-  }
-
-  handleRemove = ({username, password}) => {
-    if (window.confirm('确定移除？')) {
-      this.removeAccounts(username, password)
-    }
-  }
-
   render () {
     const {accounts} = this.state
-    if (!isStation) {
+
+    if (accounts.length === 0) {
       return null
     }
 
@@ -85,14 +60,11 @@ class QuickLogin extends React.Component {
                 <span
                   style={{cursor: 'pointer', position: 'relative'}}
                   onClick={this.handleLogin.bind(this, account)}
-                >{account.username}{account.remark ? `(${account.remark})` : ''}</span>
-              <span style={{cursor: 'pointer', position: 'absolute', right: 0}}
-                    onClick={this.handleRemove.bind(this, account)}>&nbsp;-&nbsp;</span>
+                >{account.desc || account.username}</span>
             </div>
           ))}
         </div>
         <div style={{textAlign: 'right'}}>
-          <span style={{cursor: 'pointer'}} onClick={this.handleAdd}>&nbsp;+&nbsp;</span>
           <span
             style={{cursor: 'pointer'}}
           >quick login</span>
@@ -204,6 +176,15 @@ function doLogin (username, password) {
     if (res.ok) {
       return res.json()
     }
+  })
+}
+
+function getLoginData () {
+  return window.fetch('//static.dev.guanmai.cn/build/json/login.json?' + Math.random()).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+    return Promise.reject('fetch manifest.json error')
   })
 }
 

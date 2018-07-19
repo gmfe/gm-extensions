@@ -49,7 +49,8 @@ var KEY = '__gm-extensions_guanmai_show';
 var KEYQUICKLOGIN = '__gm-extensions_quick_login';
 
 // 简单判断是否station
-var isStation = window.g_user && window.g_user.station_id;
+var isStation = window.g_user && window.g_user.station_id || window.location.host.includes('station')
+var isBShop = window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')
 
 var QuickLogin = function (_React$Component) {
   _inherits(QuickLogin, _React$Component)
@@ -61,81 +62,48 @@ var QuickLogin = function (_React$Component) {
 
     _this.handleLogin = function (_ref) {
       var username = _ref.username,
-        password = _ref.password
+        password = _ref.password;
 
       doLogin(username, password).then(function () {
         window.location.href = '/'
-      })
-    }
+      });
+    };
 
-    _this.handleAdd = function () {
-      var text = window.prompt('请输入 用户名 + 密码 + 备注(可选)，中间空格隔开')
-      if (text) {
-        var username = text.split(' ')[0]
-        var password = text.split(' ')[1]
-        var remark = text.split(' ')[2]
-
-        _this.addAccounts(username, password, remark)
-      }
-    }
-
-    _this.handleRemove = function (_ref2) {
-      var username = _ref2.username,
-        password = _ref2.password
-
-      if (window.confirm('确定移除？')) {
-        _this.removeAccounts(username, password)
-      }
+    var platform = void 0
+    if (isStation) {
+      platform = 'station'
+    } else if (isBShop) {
+      platform = 'bshop'
     }
 
     _this.state = {
-      accounts: _this.getAccounts()
-    }
+      platform: platform,
+      accounts: []
+    };
     return _this
   }
 
   _createClass(QuickLogin, [{
-    key: 'getAccounts',
-    value: function getAccounts () {
-      return JSON.parse(localStorage.getItem(KEYQUICKLOGIN)) || []
-    }
-  }, {
-    key: 'addAccounts',
-    value: function addAccounts (username, password, remark) {
-      var accounts = this.getAccounts()
-      accounts.push({
-        username: username,
-        password: password,
-        remark: remark
+    key: 'componentDidMount',
+    value: function componentDidMount () {
+      var _this2 = this
+
+      getLoginData().then(function (res) {
+        if (_this2.state.platform) {
+          _this2.setState({
+            accounts: res[_this2.state.platform]
+          })
+        }
       })
-      this.setState({
-        accounts: accounts
-      })
-      localStorage.setItem(KEYQUICKLOGIN, JSON.stringify(accounts))
-    }
-  }, {
-    key: 'removeAccounts',
-    value: function removeAccounts (username, password) {
-      var accounts = this.getAccounts()
-      var index = accounts.findIndex(function (v) {
-        return v.username === username && v.password === password
-      })
-      if (index > -1) {
-        accounts.splice(index, 1)
-      }
-      this.setState({
-        accounts: accounts
-      })
-      localStorage.setItem(KEYQUICKLOGIN, JSON.stringify(accounts))
     }
   }, {
     key: 'render',
     value: function render () {
-      var _this2 = this
+      var _this3 = this
 
       var accounts = this.state.accounts
 
-      if (!isStation) {
+      if (accounts.length === 0) {
         return null
       }
 
@@ -153,30 +121,16 @@ var QuickLogin = function (_React$Component) {
                 'span',
                 {
                   style: {cursor: 'pointer', position: 'relative'},
-                  onClick: _this2.handleLogin.bind(_this2, account)
+                  onClick: _this3.handleLogin.bind(_this3, account)
                 },
-                account.username,
-                account.remark ? '(' + account.remark + ')' : ''
-              ),
-              React.createElement(
-                'span',
-                {
-                  style: {cursor: 'pointer', position: 'absolute', right: 0},
-                  onClick: _this2.handleRemove.bind(_this2, account)
-                },
-                '\xA0-\xA0'
+                account.desc || account.username
               )
-            )
+            );
           })
         ),
         React.createElement(
           'div',
           {style: {textAlign: 'right'}},
-          React.createElement(
-            'span',
-            {style: {cursor: 'pointer'}, onClick: this.handleAdd},
-            '\xA0+\xA0'
-          ),
           React.createElement(
             'span',
             {
@@ -185,9 +139,9 @@ var QuickLogin = function (_React$Component) {
             'quick login'
           )
         )
-      )
+      );
     }
-  }])
+  }]);
 
   return QuickLogin
 }(React.Component);
@@ -198,16 +152,16 @@ var Info = function (_React$Component2) {
   function Info (props) {
     _classCallCheck(this, Info)
 
-    var _this3 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
+    var _this4 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
 
-    _this3.state = {
+    _this4.state = {
       groupId: getGroupId(),
       stationId: getStationId(),
       cmsKey: getCmsKey(),
       branch: window.____fe_branch,
       commit: window.____git_commit
-    }
-    return _this3
+    };
+    return _this4
   }
 
   _createClass(Info, [{
@@ -218,7 +172,7 @@ var Info = function (_React$Component2) {
         stationId = _state.stationId,
         cmsKey = _state.cmsKey,
         branch = _state.branch,
-        commit = _state.commit
+        commit = _state.commit;
 
       return React.createElement(
         'div',
@@ -254,9 +208,9 @@ var Info = function (_React$Component2) {
             ')'
           )
         )
-      )
+      );
     }
-  }])
+  }]);
 
   return Info
 }(React.Component);
@@ -267,37 +221,37 @@ var App = function (_React$Component3) {
   function App (props) {
     _classCallCheck(this, App)
 
-    var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
+    var _this5 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
 
-    _this4.handleShow = function () {
-      localStorage.setItem(KEY, !_this4.state.show ? '1' : '0')
-      _this4.setState({
-        show: !_this4.state.show
+    _this5.handleShow = function () {
+      localStorage.setItem(KEY, !_this5.state.show ? '1' : '0')
+      _this5.setState({
+        show: !_this5.state.show
       })
     }
 
-    _this4.state = {
+    _this5.state = {
       show: localStorage.getItem(KEY) === '1' || false,
       hasUpdate: false,
       version: getVersion()
-    }
-    return _this4
+    };
+    return _this5
   }
 
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount () {
-      var _this5 = this
+      var _this6 = this
 
       // 更新
       getNextVersion().then(function (newVersion) {
-        var diff = versionDiff(_this5.state.version, newVersion)
+        var diff = versionDiff(_this6.state.version, newVersion)
         if (diff) {
-          _this5.setState({
+          _this6.setState({
             hasUpdate: true
-          })
+          });
         }
-      })
+      });
     }
   }, {
     key: 'render',
@@ -305,7 +259,8 @@ var App = function (_React$Component3) {
       var _state2 = this.state,
         show = _state2.show,
         hasUpdate = _state2.hasUpdate,
-        version = _state2.version
+        version = _state2.version;
+
 
       return React.createElement(
         'div',
@@ -335,9 +290,9 @@ var App = function (_React$Component3) {
             version
           )
         )
-      )
+      );
     }
-  }])
+  }]);
 
   return App
 }(React.Component);
@@ -357,6 +312,15 @@ function doLogin(username, password) {
     if (res.ok) {
       return res.json()
     }
+  });
+}
+
+function getLoginData () {
+  return window.fetch('//static.dev.guanmai.cn/build/json/login.json?' + Math.random()).then(function (res) {
+    if (res.ok) {
+      return res.json()
+    }
+    return Promise.reject('fetch manifest.json error')
   })
 }
 
@@ -394,7 +358,7 @@ function getNextVersion() {
     return Promise.reject('fetch manifest.json error')
   }).then(function (json) {
     return json.version
-  })
+  });
 }
 
 function getVersion() {
