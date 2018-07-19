@@ -6,21 +6,17 @@ Root.style.bottom = '10px'
 document.body.appendChild(Root)
 
 const KEY = '__gm-extensions_guanmai_show'
-const KEYQUICKLOGIN = '__gm-extensions_quick_login'
-
-// 简单判断是否station
-const isStation = window.g_user && window.g_user.station_id || window.location.host.includes('station')
-const isBShop = window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')
 
 class QuickLogin extends React.Component {
   constructor (props) {
     super(props)
 
     let platform
-    if (isStation) {
-      platform = 'station'
-    } else if (isBShop) {
+    // 优先 bshop，因为 bshop 也有 station_id
+    if (window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')) {
       platform = 'bshop'
+    } else if (window.g_user && window.g_user.station_id || window.location.host.includes('station')) {
+      platform = 'station'
     }
 
     this.state = {
@@ -33,16 +29,24 @@ class QuickLogin extends React.Component {
     getLoginData().then(res => {
       if (this.state.platform) {
         this.setState({
-          accounts: res[this.state.platform]
+          accounts: res[this.state.platform] || []
         })
       }
     })
   }
 
   handleLogin = ({username, password}) => {
-    doLogin(username, password).then(() => {
-      window.location.href = '/'
-    })
+    const {platform} = this.state
+
+    if (platform === 'station') {
+      doStationLogin(username, password).then(() => {
+        window.location.href = '/'
+      })
+    } else if (platform === 'bshop') {
+      doBShopLogin(username, password).then(() => {
+        window.location.href = '/v587/'
+      })
+    }
   }
 
   render () {
@@ -163,8 +167,24 @@ class App extends React.Component {
 
 ReactDOM.render(<App/>, Root)
 
-function doLogin (username, password) {
+function doStationLogin (username, password) {
   return window.fetch('/station/login', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    credentials: 'include',
+    body: `username=${username}&password=${password}`
+  }).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+  })
+}
+
+function doBShopLogin (username, password) {
+  return window.fetch('/v587/login', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',

@@ -18,6 +18,8 @@ var _createClass = function () {
   }
 }()
 
+var _class, _temp, _initialiseProps
+
 function _classCallCheck (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function') } }
 
 function _possibleConstructorReturn (self, call) {
@@ -46,13 +48,8 @@ Root.style.bottom = '10px';
 document.body.appendChild(Root);
 
 var KEY = '__gm-extensions_guanmai_show';
-var KEYQUICKLOGIN = '__gm-extensions_quick_login';
 
-// 简单判断是否station
-var isStation = window.g_user && window.g_user.station_id || window.location.host.includes('station')
-var isBShop = window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')
-
-var QuickLogin = function (_React$Component) {
+var QuickLogin = (_temp = _class = function (_React$Component) {
   _inherits(QuickLogin, _React$Component)
 
   function QuickLogin (props) {
@@ -60,20 +57,14 @@ var QuickLogin = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (QuickLogin.__proto__ || Object.getPrototypeOf(QuickLogin)).call(this, props))
 
-    _this.handleLogin = function (_ref) {
-      var username = _ref.username,
-        password = _ref.password;
-
-      doLogin(username, password).then(function () {
-        window.location.href = '/'
-      });
-    };
+    _initialiseProps.call(_this)
 
     var platform = void 0
-    if (isStation) {
-      platform = 'station'
-    } else if (isBShop) {
+    // 优先 bshop，因为 bshop 也有 station_id
+    if (window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')) {
       platform = 'bshop'
+    } else if (window.g_user && window.g_user.station_id || window.location.host.includes('station')) {
+      platform = 'station'
     }
 
     _this.state = {
@@ -91,10 +82,10 @@ var QuickLogin = function (_React$Component) {
       getLoginData().then(function (res) {
         if (_this2.state.platform) {
           _this2.setState({
-            accounts: res[_this2.state.platform]
-          })
+            accounts: res[_this2.state.platform] || []
+          });
         }
-      })
+      });
     }
   }, {
     key: 'render',
@@ -102,6 +93,7 @@ var QuickLogin = function (_React$Component) {
       var _this3 = this
 
       var accounts = this.state.accounts
+
 
       if (accounts.length === 0) {
         return null
@@ -144,7 +136,25 @@ var QuickLogin = function (_React$Component) {
   }]);
 
   return QuickLogin
-}(React.Component);
+}(React.Component), _initialiseProps = function _initialiseProps () {
+  var _this4 = this
+
+  this.handleLogin = function (_ref) {
+    var username = _ref.username,
+      password = _ref.password
+    var platform = _this4.state.platform
+
+    if (platform === 'station') {
+      doStationLogin(username, password).then(function () {
+        window.location.href = '/'
+      })
+    } else if (platform === 'bshop') {
+      doBShopLogin(username, password).then(function () {
+        window.location.href = '/v587/'
+      })
+    }
+  }
+}, _temp);
 
 var Info = function (_React$Component2) {
   _inherits(Info, _React$Component2)
@@ -152,16 +162,16 @@ var Info = function (_React$Component2) {
   function Info (props) {
     _classCallCheck(this, Info)
 
-    var _this4 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
+    var _this5 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
 
-    _this4.state = {
+    _this5.state = {
       groupId: getGroupId(),
       stationId: getStationId(),
       cmsKey: getCmsKey(),
       branch: window.____fe_branch,
       commit: window.____git_commit
     };
-    return _this4
+    return _this5
   }
 
   _createClass(Info, [{
@@ -221,33 +231,33 @@ var App = function (_React$Component3) {
   function App (props) {
     _classCallCheck(this, App)
 
-    var _this5 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
+    var _this6 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
 
-    _this5.handleShow = function () {
-      localStorage.setItem(KEY, !_this5.state.show ? '1' : '0')
-      _this5.setState({
-        show: !_this5.state.show
+    _this6.handleShow = function () {
+      localStorage.setItem(KEY, !_this6.state.show ? '1' : '0')
+      _this6.setState({
+        show: !_this6.state.show
       })
     }
 
-    _this5.state = {
+    _this6.state = {
       show: localStorage.getItem(KEY) === '1' || false,
       hasUpdate: false,
       version: getVersion()
     };
-    return _this5
+    return _this6
   }
 
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount () {
-      var _this6 = this
+      var _this7 = this
 
       // 更新
       getNextVersion().then(function (newVersion) {
-        var diff = versionDiff(_this6.state.version, newVersion)
+        var diff = versionDiff(_this7.state.version, newVersion)
         if (diff) {
-          _this6.setState({
+          _this7.setState({
             hasUpdate: true
           });
         }
@@ -299,8 +309,24 @@ var App = function (_React$Component3) {
 
 ReactDOM.render(React.createElement(App, null), Root);
 
-function doLogin(username, password) {
+function doStationLogin (username, password) {
   return window.fetch('/station/login', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    credentials: 'include',
+    body: 'username=' + username + '&password=' + password
+  }).then(function (res) {
+    if (res.ok) {
+      return res.json()
+    }
+  });
+}
+
+function doBShopLogin (username, password) {
+  return window.fetch('/v587/login', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -321,7 +347,7 @@ function getLoginData () {
       return res.json()
     }
     return Promise.reject('fetch manifest.json error')
-  })
+  });
 }
 
 function getGroupId() {
