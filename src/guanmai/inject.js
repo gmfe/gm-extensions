@@ -7,20 +7,31 @@ document.body.appendChild(Root)
 
 const KEY = '__gm-extensions_guanmai_show'
 
-class QuickLogin extends React.Component {
-  constructor (props) {
-    super(props)
+function getPlatform () {
+  let platform
 
-    let platform
+  if (window.__platform) {
+    platform = window.__platform
+  } else {
     // 优先 bshop，因为 bshop 也有 station_id
     if (window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')) {
       platform = 'bshop'
     } else if (window.g_user && window.g_user.station_id || window.location.host.includes('station')) {
       platform = 'station'
+    } else if (window.g_user && window.g_user.is_staff || window.location.host.includes('manage')) {
+      platform = 'manage'
     }
+  }
+
+  return platform
+}
+
+class QuickLogin extends React.Component {
+  constructor (props) {
+    super(props)
 
     this.state = {
-      platform,
+      platform: getPlatform(),
       accounts: []
     }
   }
@@ -46,6 +57,10 @@ class QuickLogin extends React.Component {
       doBShopLogin(username, password).then(() => {
         window.location.href = '/v587/'
       })
+    } else if (platform === 'manage') {
+      doManageLogin(username, password).then(() => {
+        window.location.href = '/'
+      })
     }
   }
 
@@ -64,7 +79,7 @@ class QuickLogin extends React.Component {
                 <span
                   style={{cursor: 'pointer', position: 'relative'}}
                   onClick={this.handleLogin.bind(this, account)}
-                >{account.desc || account.username}</span>
+                >{account.username}{account.desc && `(${account.desc})`}</span>
             </div>
           ))}
         </div>
@@ -196,6 +211,28 @@ function doBShopLogin (username, password) {
     if (res.ok) {
       return res.json()
     }
+  })
+}
+
+function doManageLogin (username, password) {
+  const body = new FormData()
+
+  body.append('this_is_the_login_form', 1)
+  body.append('username', username)
+  body.append('password', password)
+
+  return window.fetch('/logout', {
+    method: 'get',
+    credentials: 'include'
+  }).then(() => {}, () => Promise.resolve()).then(() => {
+    // 无论成功，但失败把
+    return window.fetch('/custommanage/', {
+      method: 'post',
+      credentials: 'include',
+      body
+    }).then(res => {}, reason => {
+      return Promise.resolve()
+    })
   })
 }
 

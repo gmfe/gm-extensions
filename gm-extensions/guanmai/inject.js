@@ -18,8 +18,6 @@ var _createClass = function () {
   }
 }()
 
-var _class, _temp, _initialiseProps
-
 function _classCallCheck (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function') } }
 
 function _possibleConstructorReturn (self, call) {
@@ -49,7 +47,26 @@ document.body.appendChild(Root);
 
 var KEY = '__gm-extensions_guanmai_show';
 
-var QuickLogin = (_temp = _class = function (_React$Component) {
+function getPlatform () {
+  var platform = void 0
+
+  if (window.__platform) {
+    platform = window.__platform
+  } else {
+    // 优先 bshop，因为 bshop 也有 station_id
+    if (window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')) {
+      platform = 'bshop'
+    } else if (window.g_user && window.g_user.station_id || window.location.host.includes('station')) {
+      platform = 'station'
+    } else if (window.g_user && window.g_user.is_staff || window.location.host.includes('manage')) {
+      platform = 'manage'
+    }
+  }
+
+  return platform
+}
+
+var QuickLogin = function (_React$Component) {
   _inherits(QuickLogin, _React$Component)
 
   function QuickLogin (props) {
@@ -57,18 +74,28 @@ var QuickLogin = (_temp = _class = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (QuickLogin.__proto__ || Object.getPrototypeOf(QuickLogin)).call(this, props))
 
-    _initialiseProps.call(_this)
+    _this.handleLogin = function (_ref) {
+      var username = _ref.username,
+        password = _ref.password
+      var platform = _this.state.platform
 
-    var platform = void 0
-    // 优先 bshop，因为 bshop 也有 station_id
-    if (window.g_cms_config && window.g_cms_config.key || window.location.host.includes('bshop')) {
-      platform = 'bshop'
-    } else if (window.g_user && window.g_user.station_id || window.location.host.includes('station')) {
-      platform = 'station'
+      if (platform === 'station') {
+        doStationLogin(username, password).then(function () {
+          window.location.href = '/'
+        })
+      } else if (platform === 'bshop') {
+        doBShopLogin(username, password).then(function () {
+          window.location.href = '/v587/'
+        })
+      } else if (platform === 'manage') {
+        doManageLogin(username, password).then(function () {
+          window.location.href = '/'
+        })
+      }
     }
 
     _this.state = {
-      platform: platform,
+      platform: getPlatform(),
       accounts: []
     };
     return _this
@@ -115,7 +142,8 @@ var QuickLogin = (_temp = _class = function (_React$Component) {
                   style: {cursor: 'pointer', position: 'relative'},
                   onClick: _this3.handleLogin.bind(_this3, account)
                 },
-                account.desc || account.username
+                account.username,
+                account.desc && '(' + account.desc + ')'
               )
             );
           })
@@ -136,26 +164,7 @@ var QuickLogin = (_temp = _class = function (_React$Component) {
   }]);
 
   return QuickLogin
-}(React.Component), _initialiseProps = function _initialiseProps () {
-  var _this4 = this
-
-  this.handleLogin = function (_ref) {
-    var username = _ref.username,
-      password = _ref.password;
-    var platform = _this4.state.platform
-
-
-    if (platform === 'station') {
-      doStationLogin(username, password).then(function () {
-        window.location.href = '/'
-      });
-    } else if (platform === 'bshop') {
-      doBShopLogin(username, password).then(function () {
-        window.location.href = '/v587/'
-      });
-    }
-  };
-}, _temp);
+}(React.Component);
 
 var Info = function (_React$Component2) {
   _inherits(Info, _React$Component2)
@@ -163,16 +172,16 @@ var Info = function (_React$Component2) {
   function Info (props) {
     _classCallCheck(this, Info)
 
-    var _this5 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
+    var _this4 = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props))
 
-    _this5.state = {
+    _this4.state = {
       groupId: getGroupId(),
       stationId: getStationId(),
       cmsKey: getCmsKey(),
       branch: window.____fe_branch,
       commit: window.____git_commit
     };
-    return _this5
+    return _this4
   }
 
   _createClass(Info, [{
@@ -232,33 +241,33 @@ var App = function (_React$Component3) {
   function App (props) {
     _classCallCheck(this, App)
 
-    var _this6 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
+    var _this5 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props))
 
-    _this6.handleShow = function () {
-      localStorage.setItem(KEY, !_this6.state.show ? '1' : '0')
-      _this6.setState({
-        show: !_this6.state.show
+    _this5.handleShow = function () {
+      localStorage.setItem(KEY, !_this5.state.show ? '1' : '0')
+      _this5.setState({
+        show: !_this5.state.show
       });
     };
 
-    _this6.state = {
+    _this5.state = {
       show: localStorage.getItem(KEY) === '1' || false,
       hasUpdate: false,
       version: getVersion()
     };
-    return _this6
+    return _this5
   }
 
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount () {
-      var _this7 = this
+      var _this6 = this
 
       // 更新
       getNextVersion().then(function (newVersion) {
-        var diff = versionDiff(_this7.state.version, newVersion)
+        var diff = versionDiff(_this6.state.version, newVersion)
         if (diff) {
-          _this7.setState({
+          _this6.setState({
             hasUpdate: true
           });
         }
@@ -339,6 +348,30 @@ function doBShopLogin (username, password) {
     if (res.ok) {
       return res.json()
     }
+  });
+}
+
+function doManageLogin (username, password) {
+  var body = new FormData()
+
+  body.append('this_is_the_login_form', 1)
+  body.append('username', username)
+  body.append('password', password)
+
+  return window.fetch('/logout', {
+    method: 'get',
+    credentials: 'include'
+  }).then(function () {}, function () {
+    return Promise.resolve()
+  }).then(function () {
+    // 无论成功，但失败把
+    return window.fetch('/custommanage/', {
+      method: 'post',
+      credentials: 'include',
+      body: body
+    }).then(function (res) {}, function (reason) {
+      return Promise.resolve()
+    })
   });
 }
 

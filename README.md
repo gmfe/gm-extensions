@@ -21,7 +21,7 @@
 
 显示 guanmai.cn 网站的基本信息，比如 groupId、stationId、cmsKey、当前分支名、当前代码对应的 git hash 值。 
 
-提供快速登录方式(目前仅station、bshop)。 
+提供快速登录方式。 
 账号数据的维护放在 dev 机器的 /data/www/static_resource/json/login.json 下，只有内网才能访问，不用担心密码泄露。
 
 ![](http://7xlnio.com1.z0.glb.clouddn.com/18-7-19/58404351.jpg)

@@ -1,6 +1,6 @@
 {
   "name": "gm-extensions",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "manifest_version": 2,
   "description": "gm-extensions",
   "content_scripts": [
@@ -17,7 +17,8 @@
     },
     {
       "matches": [
-        "*://*.guanmai.cn/*"
+        "*://*.guanmai.cn/*",
+        "*://*.localhost/*"
       ],
       "js": [
         "guanmai/index.js"
