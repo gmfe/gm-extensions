@@ -26,21 +26,44 @@ function getPlatform () {
   return platform
 }
 
+function markBranch (username, platform) {
+  if (window.location.host === `${platform}.guanmai.cn`) {
+    localStorage.setItem(`mark_get_branch`, username)
+  }
+}
+
 class QuickLogin extends React.Component {
   constructor (props) {
     super(props)
 
     this.state = {
       platform: getPlatform(),
-      accounts: []
+      accounts: [],
+      branchUserName: {}
     }
   }
 
   componentDidMount () {
     getLoginData().then(res => {
+
+      const markGetBranch = localStorage.getItem(`mark_get_branch`)
+      if (markGetBranch) {
+        localStorage.setItem(`branch_${markGetBranch}`, window.____fe_branch)
+        localStorage.setItem(`mark_get_branch`, '')
+      }
+
+      const branchUserName = {}
+
+      _.forEach(res, platform => {
+        _.each(platform, data => {
+          branchUserName[data.username] = localStorage.getItem(`branch_${data.username}`)
+        })
+      })
+
       if (this.state.platform) {
         this.setState({
-          accounts: res[this.state.platform] || []
+          accounts: res[this.state.platform] || [],
+          branchUserName
         })
       }
     })
@@ -52,20 +75,23 @@ class QuickLogin extends React.Component {
     if (platform === 'station') {
       doStationLogin(username, password).then(() => {
         window.location.href = '/'
+        markBranch(username, platform)
       })
     } else if (platform === 'bshop') {
       doBShopLogin(username, password).then(() => {
         window.location.href = '/v587/'
+        markBranch(username, platform)
       })
     } else if (platform === 'manage') {
       doManageLogin(username, password).then(() => {
         window.location.href = '/'
+        markBranch(username, platform)
       })
     }
   }
 
   render () {
-    const {accounts} = this.state
+    const {accounts, branchUserName} = this.state
 
     if (accounts.length === 0) {
       return null
@@ -79,7 +105,11 @@ class QuickLogin extends React.Component {
                 <span
                   style={{cursor: 'pointer', position: 'relative'}}
                   onClick={this.handleLogin.bind(this, account)}
-                >{account.username}{account.desc && `(${account.desc})`}</span>
+                >
+                  {account.username}
+                  {account.desc && `(${account.desc})`}
+                  {branchUserName[account.username] && `[${branchUserName[account.username]}]`}
+                  </span>
             </div>
           ))}
         </div>

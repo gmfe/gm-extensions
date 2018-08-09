@@ -66,6 +66,12 @@ function getPlatform () {
   return platform
 }
 
+function markBranch (username, platform) {
+  if (window.location.host === platform + '.guanmai.cn') {
+    localStorage.setItem('mark_get_branch', username)
+  }
+}
+
 var QuickLogin = function (_React$Component) {
   _inherits(QuickLogin, _React$Component)
 
@@ -76,27 +82,32 @@ var QuickLogin = function (_React$Component) {
 
     _this.handleLogin = function (_ref) {
       var username = _ref.username,
-        password = _ref.password
+        password = _ref.password;
       var platform = _this.state.platform
+
 
       if (platform === 'station') {
         doStationLogin(username, password).then(function () {
           window.location.href = '/'
-        })
+          markBranch(username, platform)
+        });
       } else if (platform === 'bshop') {
         doBShopLogin(username, password).then(function () {
           window.location.href = '/v587/'
-        })
+          markBranch(username, platform)
+        });
       } else if (platform === 'manage') {
         doManageLogin(username, password).then(function () {
           window.location.href = '/'
-        })
+          markBranch(username, platform)
+        });
       }
-    }
+    };
 
     _this.state = {
       platform: getPlatform(),
-      accounts: []
+      accounts: [],
+      branchUserName: {}
     };
     return _this
   }
@@ -107,9 +118,25 @@ var QuickLogin = function (_React$Component) {
       var _this2 = this
 
       getLoginData().then(function (res) {
+
+        var markGetBranch = localStorage.getItem('mark_get_branch')
+        if (markGetBranch) {
+          localStorage.setItem('branch_' + markGetBranch, window.____fe_branch)
+          localStorage.setItem('mark_get_branch', '')
+        }
+
+        var branchUserName = {}
+
+        _.forEach(res, function (platform) {
+          _.each(platform, function (data) {
+            branchUserName[data.username] = localStorage.getItem('branch_' + data.username)
+          })
+        })
+
         if (_this2.state.platform) {
           _this2.setState({
-            accounts: res[_this2.state.platform] || []
+            accounts: res[_this2.state.platform] || [],
+            branchUserName: branchUserName
           });
         }
       });
@@ -119,7 +146,9 @@ var QuickLogin = function (_React$Component) {
     value: function render () {
       var _this3 = this
 
-      var accounts = this.state.accounts
+      var _state = this.state,
+        accounts = _state.accounts,
+        branchUserName = _state.branchUserName
 
 
       if (accounts.length === 0) {
@@ -143,7 +172,8 @@ var QuickLogin = function (_React$Component) {
                   onClick: _this3.handleLogin.bind(_this3, account)
                 },
                 account.username,
-                account.desc && '(' + account.desc + ')'
+                account.desc && '(' + account.desc + ')',
+                branchUserName[account.username] && '[' + branchUserName[account.username] + ']'
               )
             );
           })
@@ -187,12 +217,12 @@ var Info = function (_React$Component2) {
   _createClass(Info, [{
     key: 'render',
     value: function render () {
-      var _state = this.state,
-        groupId = _state.groupId,
-        stationId = _state.stationId,
-        cmsKey = _state.cmsKey,
-        branch = _state.branch,
-        commit = _state.commit;
+      var _state2 = this.state,
+        groupId = _state2.groupId,
+        stationId = _state2.stationId,
+        cmsKey = _state2.cmsKey,
+        branch = _state2.branch,
+        commit = _state2.commit
 
       return React.createElement(
         'div',
@@ -276,10 +306,10 @@ var App = function (_React$Component3) {
   }, {
     key: 'render',
     value: function render () {
-      var _state2 = this.state,
-        show = _state2.show,
-        hasUpdate = _state2.hasUpdate,
-        version = _state2.version;
+      var _state3 = this.state,
+        show = _state3.show,
+        hasUpdate = _state3.hasUpdate,
+        version = _state3.version
 
 
       return React.createElement(
@@ -371,7 +401,7 @@ function doManageLogin (username, password) {
       body: body
     }).then(function (res) {}, function (reason) {
       return Promise.resolve()
-    })
+    });
   });
 }
 
