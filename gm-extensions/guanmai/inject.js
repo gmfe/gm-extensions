@@ -127,11 +127,11 @@ var QuickLogin = function (_React$Component) {
 
         var branchUserName = {}
 
-        _.forEach(res, function (platform) {
-          _.each(platform, function (data) {
+        for (var platform in res) {
+          (res[platform] || []).forEach(function (data) {
             branchUserName[data.username] = localStorage.getItem('branch_' + data.username)
           })
-        })
+        }
 
         if (_this2.state.platform) {
           _this2.setState({
@@ -148,7 +148,7 @@ var QuickLogin = function (_React$Component) {
 
       var _state = this.state,
         accounts = _state.accounts,
-        branchUserName = _state.branchUserName
+        branchUserName = _state.branchUserName;
 
 
       if (accounts.length === 0) {
@@ -222,7 +222,7 @@ var Info = function (_React$Component2) {
         stationId = _state2.stationId,
         cmsKey = _state2.cmsKey,
         branch = _state2.branch,
-        commit = _state2.commit
+        commit = _state2.commit;
 
       return React.createElement(
         'div',
@@ -309,7 +309,7 @@ var App = function (_React$Component3) {
       var _state3 = this.state,
         show = _state3.show,
         hasUpdate = _state3.hasUpdate,
-        version = _state3.version
+        version = _state3.version;
 
 
       return React.createElement(

@@ -1,6 +1,6 @@
 {
   "name": "gm-extensions",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "manifest_version": 2,
   "description": "gm-extensions",
   "content_scripts": [

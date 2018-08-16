@@ -54,11 +54,11 @@ class QuickLogin extends React.Component {
 
       const branchUserName = {}
 
-      _.forEach(res, platform => {
-        _.each(platform, data => {
+      for (const platform in res) {
+        (res[platform] || []).forEach(data => {
           branchUserName[data.username] = localStorage.getItem(`branch_${data.username}`)
         })
-      })
+      }
 
       if (this.state.platform) {
         this.setState({
