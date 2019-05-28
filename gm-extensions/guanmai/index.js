@@ -21,8 +21,8 @@
 
     var version = chrome.runtime.getManifest().version;
 
-    var reactUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.development.js';
-    var reactDomUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.development.js';
+    var reactUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react/16.8.5/umd/react.development.js';
+    var reactDomUrl = 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.5/umd/react-dom.development.js';
 
     loadScript(reactUrl, 'react', function () {
         loadScript(reactDomUrl, 'react-dom', function () {

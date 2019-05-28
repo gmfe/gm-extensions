@@ -130,7 +130,7 @@ var QuickLogin = function (_React$Component) {
         for (var platform in res) {
           (res[platform] || []).forEach(function (data) {
             branchUserName[data.username] = localStorage.getItem('branch_' + data.username)
-          })
+          });
         }
 
         if (_this2.state.platform) {
@@ -157,18 +157,18 @@ var QuickLogin = function (_React$Component) {
 
       return React.createElement(
         'div',
-        {style: {borderBottom: '1px solid black'}},
+        { style: { borderBottom: '1px solid black' } },
         React.createElement(
           'div',
           null,
           accounts.map(function (account, i) {
             return React.createElement(
               'div',
-              {key: i},
+              { key: i },
               React.createElement(
                 'span',
                 {
-                  style: {cursor: 'pointer', position: 'relative'},
+                  style: { cursor: 'pointer', position: 'relative' },
                   onClick: _this3.handleLogin.bind(_this3, account)
                 },
                 account.username,
@@ -180,11 +180,11 @@ var QuickLogin = function (_React$Component) {
         ),
         React.createElement(
           'div',
-          {style: {textAlign: 'right'}},
+          { style: { textAlign: 'right' } },
           React.createElement(
             'span',
             {
-              style: {cursor: 'pointer'}
+              style: { cursor: 'pointer' }
             },
             'quick login'
           )
@@ -226,7 +226,7 @@ var Info = function (_React$Component2) {
 
       return React.createElement(
         'div',
-        {style: {borderBottom: '1px solid black'}},
+        { style: { borderBottom: '1px solid black' } },
         React.createElement(
           'div',
           null,
@@ -326,16 +326,16 @@ var App = function (_React$Component3) {
           null,
           hasUpdate && React.createElement(
           'div',
-          {style: {textAlign: 'right'}},
+          { style: { textAlign: 'right' } },
           React.createElement(
             'a',
-            {target: '_blank', href: 'https://github.com/gmfe/gm-extensions'},
+            { target: '_blank', href: 'https://github.com/gmfe/gm-extensions' },
             '\u6709\u65B0\u7248\u672C\uFF0C\u70B9\u51FB\u8BF7\u524D\u5F80\u66F4\u65B0'
           )
           ),
           React.createElement(
             'div',
-            {style: {textAlign: 'right', cursor: 'pointer'}, onClick: this.handleShow},
+            { style: { textAlign: 'right', cursor: 'pointer' }, onClick: this.handleShow },
             'assistant v',
             version
           )
